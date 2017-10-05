@@ -1,10 +1,10 @@
+from datetime import date, datetime
 from requests import get
-from datetime import datetime
 
 # Module variables to connect to STUDIS api
 KEY = "SECRET API KEY"
 URL = "https://studis.site.com"
-ENDPOINT="/api/"
+ENDPOINT = "/api/"
 
 def call(apiname, **kwargs):
     """Calls STUDIS API function with apiname and keyword arguments.
@@ -22,7 +22,7 @@ class CourseList():
     """Class for list of all courses in Moodle and order them by id and idnumber."""
     def __init__(self,year=None):
         if not year:
-            year = datetime.now().strftime("%Y")
+            year = date.today().year
         self.courses = call('studijapi/%s/izvajanjepredmeta' % str(year))
         data = call('studijapi/%s/predmet' % str(year))
         self.by_id = {}
@@ -71,3 +71,19 @@ class StudyTree():
             if program['parent']:
                 parent = self.by_id[program['parent']]
                 parent['children'] = parent.get('children',[])+[program]
+    def praparent(self, program_id, parent_id_list):
+        "Recursively find a praparent of a program with program_id from a list of selected parents."
+        program = self.by_id.get(program_id)
+        if not program:
+            return None
+        parent_id = program['parent']
+        if parent_id in parent_id_list:
+            return parent_id
+        elif parent_id:
+            # search higher
+            return self.praparent(parent_id, parent_id_list)
+        elif program_id in parent_id_list:
+            return program_id
+        else:
+            # we've reached the top and didn't find anything
+            return None

@@ -20,7 +20,7 @@ def call(apiname, **kwargs):
 
 class CourseList():
     """Class for list of all courses in Moodle and order them by id and idnumber."""
-    def __init__(self,year=None):
+    def __init__(self, year=None):
         if not year:
             year = date.today().year
         self.courses = call('studijapi/%s/izvajanjepredmeta' % str(year))
@@ -57,10 +57,10 @@ class StaffList():
 
 class StudyTree():
     "Class representing stusy tree of programs and years"
-    def __init__(self,date=None):
+    def __init__(self,year=None):
         if date==None:
-            date_str = datetime.now().strftime("%Y")
-        self.programs = call('//studijapi/studijskodrevo/'+date_str)
+            year = date.today().year
+        self.programs = call('//studijapi/{0}/studijskodrevo/'.format(year))
         self.tree = {}
         self.by_id = {}
         for program in self.programs:

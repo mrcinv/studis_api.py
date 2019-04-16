@@ -41,8 +41,8 @@ class StudentList():
     """
     def __init__(self,date=None):
         if date==None:
-            date_str = datetime.now().strftime("%Y-%m-%d")
-        self.students = call('/studentiapi/student?date='+date_str)
+            date = datetime.now().strftime("%Y-%m-%d")
+        self.students = call('/studentiapi/student?date={0}'.format(date))
         self.by_idnumber = {}
         for student in self.students:
             self.by_idnumber[student['vpisna_stevilka']] = student
@@ -58,7 +58,7 @@ class StaffList():
 class StudyTree():
     "Class representing stusy tree of programs and years"
     def __init__(self,year=None):
-        if date==None:
+        if year==None:
             year = date.today().year
         self.programs = call('//studijapi/{0}/studijskodrevo/'.format(year))
         self.tree = {}
